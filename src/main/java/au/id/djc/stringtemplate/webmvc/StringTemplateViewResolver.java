@@ -24,10 +24,6 @@ public class StringTemplateViewResolver extends AbstractTemplateViewResolver imp
         if (errorListener == null) {
             throw new IllegalArgumentException("Property 'errorListener' is required");
         }
-        if (attributeRenderers == null) {
-            attributeRenderers = new ArrayList<AttributeRenderer>(
-                    BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), AttributeRenderer.class).values());
-        }
     }
     
     public void setRootTemplateName(String rootTemplateName) {
@@ -65,7 +61,12 @@ public class StringTemplateViewResolver extends AbstractTemplateViewResolver imp
         if (rootTemplateName != null) view.setRootTemplateName(rootTemplateName);
         if (charset != null) view.setCharset(charset);
         view.setErrorListener(errorListener);
-        view.setAttributeRenderers(attributeRenderers);
+        if (attributeRenderers == null) {
+            view.setAttributeRenderers(new ArrayList<AttributeRenderer>(
+                    BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), AttributeRenderer.class).values()));
+        } else {
+            view.setAttributeRenderers(attributeRenderers);
+        }
         return view;
     }
 
